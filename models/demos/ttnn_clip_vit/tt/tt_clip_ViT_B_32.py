@@ -2,7 +2,24 @@
 import torch
 import ttnn
 
-state_dict = torch.load("ViT-B-32.pt", map_location="cpu")
+import os
+import torch
+
+model_path = os.path.join(os.path.dirname(__file__), "ViT-B-32.pt")
+
+if not os.path.exists(model_path):
+    raise FileNotFoundError(
+        f"\n[ERROR] Could not find model weights at: {model_path}\n"
+        "Please download 'ViT-B-32.pt' and place it in the same folder as tt_clip_ViT_B_32.py.\n"
+        "You can generate it with:\n"
+        "  import torch\n"
+        "  from transformers import CLIPModel\n"
+        "  model = CLIPModel.from_pretrained('openai/clip-vit-base-patch32')\n"
+        "  torch.save(model.vision_model.state_dict(), 'ViT-B-32.pt')"
+    )
+
+state_dict = torch.load(model_path, map_location="cpu")
+
 
 # ✅ Step 2: Extract Model Dimensions
 vision_width = state_dict["visual.conv1.weight"].shape[0]  # usually 768
